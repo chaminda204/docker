@@ -1,0 +1,20 @@
+version: '3'
+services:
+  localstack:
+    image: localstack/localstack
+    container_name: aws_localstack
+    ports:
+      - "4567-4582:4567-4582"
+      - "8080:8085"
+    environment:
+      - SERVICES=sqs,sns
+      - DEFAULT_REGION=ap-southeast-2
+      - AWS_ACCESS_KEY_ID=someKey
+      - AWS_SECRET_ACCESS_KEY=somesecreat
+  init:
+    depends_on:
+      - localstack
+    image: garland/aws-cli-docker
+    command: sh -c 'sleep 1; sh /project/init_localstack.sh'
+    volumes:
+      - "./create_env.sh:/project/init_localstack.sh"
